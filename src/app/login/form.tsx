@@ -1,10 +1,9 @@
 "use client";
 
-import { redirect, useRouter, useSearchParams } from 'next/navigation'
-import { FormEvent, FormEventHandler, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { FormEvent, useState } from 'react'
 
 async function login(username: string, password: string, loginRequestId: string): Promise<string> {
-
   const res = await fetch('https://localhost:20010/account/login', {
     method: 'POST',
     headers: {
@@ -28,12 +27,18 @@ export default function Form() {
   const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
     const loginResponseId = await login(username, password, loginRequestId)
     const returnUrl = decodeURI(searchParams.get('ReturnUrl') ?? '/')
     router.replace(returnUrl + `&loginResponseId=${loginResponseId}`)
+  }
+  const onClickGoogle = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    const loginRequestId = searchParams.get('loginRequestId') ?? ''
+    const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
+    router.push(`https://localhost:20010/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
   }
   return (
     <div>
@@ -50,6 +55,9 @@ export default function Form() {
             <button type="submit">Submit</button>
           </div>
         </form>
+      </div>
+      <div>
+        <a href="#" onClick={onClickGoogle}>Google</a>
       </div>
     </div>
   )
