@@ -1,0 +1,6 @@
+services:
+  identity-ui:
+    build: .
+    ports:
+      - "20020:3000"
+      

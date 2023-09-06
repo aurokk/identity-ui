@@ -1,0 +1,10 @@
+.git
+.idea
+.gitignore
+.next
+compose.yml
+Identity.sln.DotSettings.user
+node_modules
+README.md
+**/bin
+**/obj
