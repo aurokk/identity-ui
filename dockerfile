@@ -30,7 +30,7 @@ COPY . .
 # RUN yarn build
 
 # If using npm comment out above and use below instead
-RUN npm run build
+RUN NEXT_PUBLIC_API_BASE_URL=NEXT_PUBLIC_API_BASE_URL npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -53,6 +53,10 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY entrypoint.sh ./
+
+RUN chown nextjs:nodejs entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 USER nextjs
 
@@ -61,5 +65,7 @@ EXPOSE 3000
 ENV PORT 3000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
+
+ENTRYPOINT ["/app/entrypoint.sh"]
 
 CMD ["node", "server.js"]

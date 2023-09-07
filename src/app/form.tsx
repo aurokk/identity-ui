@@ -8,7 +8,7 @@ type MeResponse = {
 }
 
 async function fetchMe(): Promise<MeResponse> {
-  const res = await fetch('https://localhost:20010/account/me', {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/me`, {
     mode: 'cors',
     credentials: 'include',
   })
@@ -24,7 +24,7 @@ export default function Form() {
 
   const onClickLogout = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-    await fetch('https://localhost:20010/account/logout', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/logout`, {
       method: 'POST',
       mode: 'cors',
       credentials: 'include',
@@ -41,7 +41,7 @@ export default function Form() {
     }
 
     check()
-  })
+  }, [])
 
   return (
     <div>
