@@ -16,8 +16,8 @@ async function fetchMe(): Promise<MeResponse> {
   return res.json()
 }
 
-async function login(username: string, password: string, loginRequestId: string): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login`, {
+async function register(username: string, password: string, passwordConfirmation: string, loginRequestId: string): Promise<string> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -27,6 +27,7 @@ async function login(username: string, password: string, loginRequestId: string)
     body: JSON.stringify({
       username: username,
       password: password,
+      passwordConfirmation: passwordConfirmation,
       loginRequestId: loginRequestId
     })
   })
@@ -40,10 +41,11 @@ export default function Form() {
   const router = useRouter()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
-    const loginResponseId = await login(username, password, loginRequestId)
+    const loginResponseId = await register(username, password, passwordConfirmation, loginRequestId)
     const returnUrl = decodeURI(searchParams.get('ReturnUrl') ?? '/')
     router.replace(returnUrl + `&loginResponseId=${loginResponseId}`)
   }
@@ -52,12 +54,6 @@ export default function Form() {
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
     const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
     router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
-  }
-  const onClickRegister = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    const loginRequestId = searchParams.get('loginRequestId') ?? ''
-    const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-    router.push(`/register?ReturnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
   }
   useEffect(() => {
     async function check() {
@@ -70,7 +66,7 @@ export default function Form() {
   }, [])
   return (
     <div>
-      <div>Login</div>
+      <div>Register</div>
       <div>
         <form onSubmit={onSubmit}>
           <div>
@@ -80,12 +76,12 @@ export default function Form() {
             <input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <div>
+            <input placeholder="password confirmation" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
+          </div>
+          <div>
             <button type="submit">Submit</button>
           </div>
         </form>
-      </div>
-      <div>
-        <a href="#" onClick={onClickRegister}>Register</a>
       </div>
       <div>
         <a href="#" onClick={onClickGoogle}>Google</a>
