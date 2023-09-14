@@ -1,8 +1,13 @@
 name: main
 on:
-  - push
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-  build:
+  build-image:
     name: Build & Push
     runs-on: ubuntu-latest
     steps:
@@ -18,13 +23,13 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ${{ vars.DOCKERHUB_USERNAME }}/power-ui
+            ${{ vars.DOCKERHUB_USERNAME }}/cosmo
           tags: |
             type=sha,prefix=,suffix=,format=long
       - name: Build and push to Docker Hub
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -8,7 +8,7 @@ type MeResponse = {
 }
 
 async function fetchMe(): Promise<MeResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/me`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/me`, {
     mode: 'cors',
     credentials: 'include',
   })
@@ -17,7 +17,7 @@ async function fetchMe(): Promise<MeResponse> {
 }
 
 async function register(username: string, password: string, passwordConfirmation: string, loginRequestId: string): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/register`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function Form() {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
     const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-    router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
+    router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
   }
   useEffect(() => {
     async function check() {

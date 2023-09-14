@@ -1,9 +1,9 @@
 {
-  "name": "power-ui",
+  "name": "cosmo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_API_BASE_URL=https://localhost:20010 next dev -p 20020",
+    "dev": "NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL=https://localhost:20000 NEXT_PUBLIC_POWER_PUBLIC_BASE_URL=https://localhost:20010 next dev -p 20020",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

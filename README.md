@@ -35,8 +35,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Build
 ```
-docker build -t identity-ui .
-docker run -d --name identity-ui -p20020:80 identity-ui
+docker build -t cosmo .
+docker run -d --name cosmo -p20020:80 cosmo
 docker compose up -d --build
 docker compose down -v
 ```
