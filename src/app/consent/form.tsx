@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 // }
 
 async function fetchConsent(returnUrl: string): Promise<void> {
-  const res = await fetch(`https://localhost:20000/api/public/consent?returnUrl=${encodeURIComponent(returnUrl)}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent?returnUrl=${encodeURIComponent(returnUrl)}`, {
     mode: 'cors',
     credentials: 'include',
   })
@@ -16,7 +16,7 @@ async function fetchConsent(returnUrl: string): Promise<void> {
 }
 
 async function acceptConsent(returnUrl: string): Promise<void> {
-  const res = await fetch(`https://localhost:20000/api/public/consent/accept`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/accept`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ async function acceptConsent(returnUrl: string): Promise<void> {
 }
 
 async function rejectConsent(returnUrl: string): Promise<void> {
-  const res = await fetch(`https://localhost:20000/api/public/consent/reject`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/reject`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ type MeResponse = {
 }
 
 async function fetchMe(): Promise<MeResponse> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/me`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/me`, {
     mode: 'cors',
     credentials: 'include',
   })
@@ -17,7 +17,7 @@ async function fetchMe(): Promise<MeResponse> {
 }
 
 async function login(username: string, password: string, loginRequestId: string): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export default function Form() {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
     const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-    router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
+    router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
   }
   const onClickRegister = async (e: React.MouseEvent) => {
     e.preventDefault()

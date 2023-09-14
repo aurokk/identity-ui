@@ -2,6 +2,7 @@ services:
   power-ui:
     build: .
     environment:
-      NEXT_PUBLIC_API_BASE_URL: "http://localhost:20010"
+      NEXT_PUBLIC_POWER_PUBLIC_BASE_URL: "http://localhost:20010"
+      NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL: "http://localhost:20000"
     ports:
       - "20020:3000"

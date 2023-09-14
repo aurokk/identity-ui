@@ -30,7 +30,7 @@ COPY . .
 # RUN yarn build
 
 # If using npm comment out above and use below instead
-RUN NEXT_PUBLIC_API_BASE_URL=NEXT_PUBLIC_API_BASE_URL npm run build
+RUN NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL=NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL NEXT_PUBLIC_POWER_PUBLIC_BASE_URL=NEXT_PUBLIC_POWER_PUBLIC_BASE_URL npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
