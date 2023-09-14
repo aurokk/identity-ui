@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM --platform=$BUILDPLATFORM node:18-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
