@@ -1,42 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cosmo
 
-## Getting Started
+Cosmo это пользовательский интерфейс для логина,
+регистрации, а так же согласия на доступ к данным (consent).
+Другими словами, это пользовательский интерфейс для power и denji.
 
-First, run the development server:
+Стек: TS, .NextJS, TailwindCSS.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+При разработке своего приложения можно взять это приложение за основу
+и сделать UI таким, каким нужно вам.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. `node & npm`
+1. `docker & docker compose`
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Build & Run
 
-## Learn More
+1. `npm run dev` — запуск в режиме разработки
+2. `npm run build` – собрать приложения для публикации
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Build
-```
-docker build -t cosmo .
-docker run -d --name cosmo -p20020:80 cosmo
-docker compose up -d --build
-docker compose down -v
-```
+Изменения в проекте приветствуются в соответствии с [правилами](https://github.com/yaiam/.github/blob/main/CONTRIBUTING.md).
