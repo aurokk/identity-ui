@@ -7,15 +7,15 @@ import { useEffect, useState } from 'react'
 //   isSignedIn: boolean;
 // }
 
-async function fetchConsent(returnUrl: string): Promise<void> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent?returnUrl=${encodeURIComponent(returnUrl)}`, {
+async function fetchConsent(consentRequestId: string): Promise<void> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent?consentRequestId=${consentRequestId}`, {
     mode: 'cors',
     credentials: 'include',
   })
   if (!res.ok) throw Error()
 }
 
-async function acceptConsent(returnUrl: string): Promise<void> {
+async function acceptConsent(consentRequestId: string): Promise<string> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/accept`, {
     method: 'POST',
     headers: {
@@ -24,13 +24,15 @@ async function acceptConsent(returnUrl: string): Promise<void> {
     mode: 'cors',
     credentials: 'include',
     body: JSON.stringify({
-      returnUrl: returnUrl,
+      consentRequestId: consentRequestId,
     })
   })
   if (!res.ok) throw Error()
+  const response = await res.json();
+  return response.consentResponseId
 }
 
-async function rejectConsent(returnUrl: string): Promise<void> {
+async function rejectConsent(consentRequestId: string): Promise<string> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/reject`, {
     method: 'POST',
     headers: {
@@ -39,10 +41,12 @@ async function rejectConsent(returnUrl: string): Promise<void> {
     mode: 'cors',
     credentials: 'include',
     body: JSON.stringify({
-      returnUrl: returnUrl,
+      consentRequestId: consentRequestId,
     })
   })
   if (!res.ok) throw Error()
+  const response = await res.json();
+  return response.consentResponseId
 }
 
 // async function login(username: string, password: string, loginRequestId: string): Promise<string> {
@@ -70,16 +74,16 @@ export default function Form() {
 
   const onClickAccept = async (e: React.MouseEvent) => {
     e.preventDefault()
-    const returnUrl = searchParams.get('returnUrl') ?? ''
-    await acceptConsent(returnUrl)
-    router.replace(returnUrl)
+    const consentRequestId = searchParams.get('consentRequestId') ?? ''
+    const consentResponseId = await acceptConsent(consentRequestId)
+    router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
   const onClickReject = async (e: React.MouseEvent) => {
     e.preventDefault()
-    const returnUrl = searchParams.get('returnUrl') ?? ''
-    await rejectConsent(returnUrl)
-    router.replace(returnUrl)
+    const consentRequestId = searchParams.get('consentRequestId') ?? ''
+    const consentResponseId = await rejectConsent(consentRequestId)
+    router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
   // const [username, setUsername] = useState('')
@@ -105,8 +109,8 @@ export default function Form() {
   // }
 
   useEffect(() => {
-    const returnUrl = searchParams.get('returnUrl') ?? ''
-    fetchConsent(returnUrl)
+    const consentRequestId = searchParams.get('consentRequestId') ?? ''
+    fetchConsent(consentRequestId)
   }, [])
 
   return (
