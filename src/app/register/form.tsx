@@ -55,15 +55,15 @@ export default function Form() {
     // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
     router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?loginRequestId=${loginRequestId}`)
   }
-  useEffect(() => {
-    async function check() {
-      const me = await fetchMe()
-      if (me.isSignedIn) {
-        router.replace('/')
-      }
-    }
-    check()
-  }, [])
+  // useEffect(() => {
+  //   async function check() {
+  //     const me = await fetchMe()
+  //     if (me.isSignedIn) {
+  //       router.replace('/')
+  //     }
+  //   }
+  //   check()
+  // }, [])
   return (
     <div>
       <div>Register</div>

@@ -59,15 +59,15 @@ export default function Form() {
     // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
     router.push(`/register?loginRequestId=${loginRequestId}`)
   }
-  useEffect(() => {
-    async function check() {
-      const me = await fetchMe()
-      if (me.isSignedIn) {
-        router.replace('/')
-      }
-    }
-    check()
-  }, [])
+  // useEffect(() => {
+  //   async function check() {
+  //     const me = await fetchMe()
+  //     if (me.isSignedIn) {
+  //       router.replace('/')
+  //     }
+  //   }
+  //   check()
+  // }, [])
   return (
     <div>
       <div>Login</div>
