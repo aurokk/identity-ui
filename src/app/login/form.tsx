@@ -44,30 +44,30 @@ export default function Form() {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
     const loginResponseId = await login(username, password, loginRequestId)
-    const returnUrl = decodeURI(searchParams.get('ReturnUrl') ?? '/')
-    router.replace(returnUrl + `&loginResponseId=${loginResponseId}`)
+    // const returnUrl = decodeURI(searchParams.get('ReturnUrl') ?? '/')
+    router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?loginResponseId=${loginResponseId}`)
   }
   const onClickGoogle = async (e: React.MouseEvent) => {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
-    const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-    router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
+    // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
+    router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?loginRequestId=${loginRequestId}`)
   }
   const onClickRegister = async (e: React.MouseEvent) => {
     e.preventDefault()
     const loginRequestId = searchParams.get('loginRequestId') ?? ''
-    const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-    router.push(`/register?ReturnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
+    // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
+    router.push(`/register?loginRequestId=${loginRequestId}`)
   }
-  useEffect(() => {
-    async function check() {
-      const me = await fetchMe()
-      if (me.isSignedIn) {
-        router.replace('/')
-      }
-    }
-    check()
-  }, [])
+  // useEffect(() => {
+  //   async function check() {
+  //     const me = await fetchMe()
+  //     if (me.isSignedIn) {
+  //       router.replace('/')
+  //     }
+  //   }
+  //   check()
+  // }, [])
   return (
     <div>
       <div>Login</div>
