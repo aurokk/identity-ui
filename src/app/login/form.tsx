@@ -114,7 +114,7 @@ export default function Form() {
             <button
               type="submit"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Submit</button>
-            <p className="text-sm font-light text-gray-900">Don’t have an account yet? <a href="#" className="font-medium text-primary-900 hover:underline">Sign up</a></p>
+            <p className="text-sm font-light text-gray-900">Don’t have an account yet? <a href="#" onClick={onClickRegister} className="font-medium text-primary-900 hover:underline">Register</a></p>
           </form>
         </div>
       </div>

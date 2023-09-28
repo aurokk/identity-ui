@@ -55,6 +55,12 @@ export default function Form() {
     // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
     router.push(`${process.env.NEXT_PUBLIC_POWER_PUBLIC_BASE_URL}/account/login/google?loginRequestId=${loginRequestId}`)
   }
+  const onClickLogin = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    const loginRequestId = searchParams.get('loginRequestId') ?? ''
+    // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
+    router.push(`/login?loginRequestId=${loginRequestId}`)
+  }
   // useEffect(() => {
   //   async function check() {
   //     const me = await fetchMe()
@@ -65,26 +71,67 @@ export default function Form() {
   //   check()
   // }, [])
   return (
-    <div>
-      <div>Register</div>
-      <div>
-        <form onSubmit={onSubmit}>
-          <div>
-            <input placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          </div>
-          <div>
-            <input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <div>
-            <input placeholder="password confirmation" value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} />
-          </div>
-          <div>
-            <button type="submit">Submit</button>
-          </div>
-        </form>
-      </div>
-      <div>
-        <a href="#" onClick={onClickGoogle}>Google</a>
+    <div className="sm:flex sm:min-h-screen sm:justify-center sm:items-center">
+      <div className="sm:w-96">
+        <div className="sm:border border-gray-300 p-8">
+          <form className="space-y-6" onSubmit={onSubmit}>
+            <div>
+              <label
+                htmlFor="username"
+                className="block mb-2 text-sm font-medium text-gray-900">Username</label>
+              <input
+                type="text"
+                id="username"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-gray-900">Password</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                required />
+            </div>
+            <div>
+              <label
+                htmlFor="password-confirmation"
+                className="block mb-2 text-sm font-medium text-gray-900">Password confirmation</label>
+              <input
+                type="password"
+                id="password-confirmation"
+                placeholder="Password confirmation"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                required />
+            </div>
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  value=""
+                  className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" />
+              </div>
+              <label
+                htmlFor="remember"
+                className="ml-2 text-sm font-medium text-gray-900">Remember me</label>
+            </div>
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Submit</button>
+            <p className="text-sm font-light text-gray-900">Do already have an account? <a href="#" onClick={onClickLogin} className="font-medium text-primary-900 hover:underline">Login</a></p>
+          </form>
+        </div>
       </div>
     </div>
   )
