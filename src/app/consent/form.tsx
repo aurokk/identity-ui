@@ -2,17 +2,52 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { Configuration, ConsentApi, FetchParams, ResponseContext, } from '@yaiam/denji-public-client'
 
-// type MeResponse = {
-//   isSignedIn: boolean;
-// }
-
-async function fetchConsent(consentRequestId: string): Promise<void> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent?consentRequestId=${consentRequestId}`, {
-    mode: 'cors',
-    credentials: 'include',
+function preMiddleware(context: ResponseContext): Promise<FetchParams | void> {
+  return Promise.resolve({
+    url: context.url,
+    init: {
+      ...context.init,
+      mode: "cors"
+    },
   })
-  if (!res.ok) throw Error()
+}
+
+type Client = {
+  description: string | null
+  name: string
+}
+
+type Scope = {
+  description: string | null
+  name: string
+  value: string
+}
+
+type Consent = {
+  client: Client
+  scopes: Scope[]
+}
+
+async function fetchConsent(consentRequestId: string): Promise<Consent> {
+  const conf = new Configuration({ basePath: `${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}` })
+  const client = new ConsentApi(conf).withPreMiddleware(preMiddleware)
+  const req = { consentRequestId }
+  const res = await client.apiPublicConsentGetRaw(req, {})
+  const value = await res.value()
+  if (!res.raw.ok) throw Error()
+  return {
+    client: {
+      description: value.client?.description ?? null,
+      name: value.client?.name ?? 'name'
+    },
+    scopes: (value.scopes ?? []).map((s) => ({
+      description: null,
+      name: s.name || 'name',
+      value: s.value || 'value',
+    })),
+  }
 }
 
 async function acceptConsent(consentRequestId: string): Promise<string> {
@@ -28,7 +63,7 @@ async function acceptConsent(consentRequestId: string): Promise<string> {
     })
   })
   if (!res.ok) throw Error()
-  const response = await res.json();
+  const response = await res.json()
   return response.consentResponseId
 }
 
@@ -45,30 +80,11 @@ async function rejectConsent(consentRequestId: string): Promise<string> {
     })
   })
   if (!res.ok) throw Error()
-  const response = await res.json();
+  const response = await res.json()
   return response.consentResponseId
 }
 
-// async function login(username: string, password: string, loginRequestId: string): Promise<string> {
-//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     mode: 'cors',
-//     credentials: 'include',
-//     body: JSON.stringify({
-//       username: username,
-//       password: password,
-//       loginRequestId: loginRequestId
-//     })
-//   })
-//   if (!res.ok) throw Error()
-//   const response = await res.json();
-//   return response.loginResponseId
-// }
-
-export default function Form() {
+function ConsentContent({ consent }: { consent: Consent }) {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -86,55 +102,52 @@ export default function Form() {
     router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
-  // const [username, setUsername] = useState('')
-  // const [password, setPassword] = useState('')
-  // const onSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   const loginRequestId = searchParams.get('loginRequestId') ?? ''
-  //   const loginResponseId = await login(username, password, loginRequestId)
-  //   const returnUrl = decodeURI(searchParams.get('ReturnUrl') ?? '/')
-  //   router.replace(returnUrl + `&loginResponseId=${loginResponseId}`)
-  // }
-  // const onClickGoogle = async (e: React.MouseEvent) => {
-  //   e.preventDefault()
-  //   const loginRequestId = searchParams.get('loginRequestId') ?? ''
-  //   const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-  //   router.push(`${process.env.NEXT_PUBLIC_API_BASE_URL}/account/login/google?returnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
-  // }
-  // const onClickRegister = async (e: React.MouseEvent) => {
-  //   e.preventDefault()
-  //   const loginRequestId = searchParams.get('loginRequestId') ?? ''
-  //   const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
-  //   router.push(`/register?ReturnUrl=${returnUrl}&loginRequestId=${loginRequestId}`)
-  // }
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <div><span className="font-semibold">{consent.client.name}</span> requests access to:</div>
+        <div className="space-y-2">
+          {consent.scopes.map(s => <div><div className="font-semibold">{s.value}</div><div>{s.name}</div></div>)}
+        </div>
+      </div>
+      <div className="space-y-2">
+        <button
+          type="submit"
+          onClick={onClickReject}
+          className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Reject</button>
+        <button
+          type="submit"
+          onClick={onClickAccept}
+          className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Accept</button>
+      </div>
+    </div>
+  )
+}
+
+function LoadingContent() {
+  return <div>Loading...</div>
+}
+
+export default function Form() {
+  const searchParams = useSearchParams()
+
+  const [consent, setConsent] = useState<Consent | null>(null)
 
   useEffect(() => {
-    const consentRequestId = searchParams.get('consentRequestId') ?? ''
-    fetchConsent(consentRequestId)
+    const execute = async () => {
+      const consentRequestId = searchParams.get('consentRequestId') ?? ''
+      const consent = await fetchConsent(consentRequestId)
+      setConsent(consent)
+    }
+    execute()
   }, [])
 
   return (
-    <div>
-      <div>Consent</div>
-      {/* 
-      <div>
-        <form onSubmit={onSubmit}>
-          <div>
-            <input placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          </div>
-          <div>
-            <input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          <div>
-            <button type="submit">Submit</button>
-          </div>
-        </form>
-      </div>*/}
-      <div>
-        <a href="#" onClick={onClickAccept}>Accept</a>
-      </div>
-      <div>
-        <a href="#" onClick={onClickReject}>Reject</a>
+    <div className="sm:flex sm:min-h-screen sm:justify-center sm:items-center">
+      <div className="sm:w-96">
+        <div className="sm:border border-gray-300 p-8">
+          {consent ? <ConsentContent consent={consent} /> : <LoadingContent />}
+        </div>
       </div>
     </div>
   )
