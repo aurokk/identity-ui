@@ -6,7 +6,8 @@ function corsPreMiddleware(context: ResponseContext): Promise<FetchParams | void
     url: context.url,
     init: {
       ...context.init,
-      mode: "cors"
+      mode: "cors",
+      credentials: "include",
     },
   })
 }
