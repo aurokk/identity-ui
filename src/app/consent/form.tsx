@@ -28,7 +28,7 @@ function ConsentContent({ client, consent }: { client: ConsentApiClient, consent
       <div className="space-y-2">
         <div><span className="font-semibold">{consent.client.name}</span> requests access to:</div>
         <div className="space-y-2">
-          {consent.scopes.map(s => <div><div className="font-semibold">{s.value}</div><div>{s.name}</div></div>)}
+          {consent.scopes.map(s => <div key={s.value}><div className="font-semibold">{s.value}</div><div>{s.name}</div></div>)}
         </div>
       </div>
       <div className="space-y-2">
