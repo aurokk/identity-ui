@@ -1,104 +1,25 @@
 "use client"
 
+import { ConsentApiClient } from '@/consentApiClient'
+import { Consent } from '@/domain'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Configuration, ConsentApi, FetchParams, ResponseContext, } from '@yaiam/denji-public-client'
 
-function preMiddleware(context: ResponseContext): Promise<FetchParams | void> {
-  return Promise.resolve({
-    url: context.url,
-    init: {
-      ...context.init,
-      mode: "cors"
-    },
-  })
-}
-
-type Client = {
-  description: string | null
-  name: string
-}
-
-type Scope = {
-  description: string | null
-  name: string
-  value: string
-}
-
-type Consent = {
-  client: Client
-  scopes: Scope[]
-}
-
-async function fetchConsent(consentRequestId: string): Promise<Consent> {
-  const conf = new Configuration({ basePath: `${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}` })
-  const client = new ConsentApi(conf).withPreMiddleware(preMiddleware)
-  const req = { consentRequestId }
-  const res = await client.apiPublicConsentGetRaw(req, {})
-  const value = await res.value()
-  if (!res.raw.ok) throw Error()
-  return {
-    client: {
-      description: value.client?.description ?? null,
-      name: value.client?.name ?? 'name'
-    },
-    scopes: (value.scopes ?? []).map((s) => ({
-      description: null,
-      name: s.name || 'name',
-      value: s.value || 'value',
-    })),
-  }
-}
-
-async function acceptConsent(consentRequestId: string): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/accept`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-    credentials: 'include',
-    body: JSON.stringify({
-      consentRequestId: consentRequestId,
-    })
-  })
-  if (!res.ok) throw Error()
-  const response = await res.json()
-  return response.consentResponseId
-}
-
-async function rejectConsent(consentRequestId: string): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/api/public/consent/reject`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-    credentials: 'include',
-    body: JSON.stringify({
-      consentRequestId: consentRequestId,
-    })
-  })
-  if (!res.ok) throw Error()
-  const response = await res.json()
-  return response.consentResponseId
-}
-
-function ConsentContent({ consent }: { consent: Consent }) {
+function ConsentContent({ client, consent }: { client: ConsentApiClient, consent: Consent }) {
   const searchParams = useSearchParams()
   const router = useRouter()
 
   const onClickAccept = async (e: React.MouseEvent) => {
     e.preventDefault()
     const consentRequestId = searchParams.get('consentRequestId') ?? ''
-    const consentResponseId = await acceptConsent(consentRequestId)
+    const consentResponseId = await client.acceptConsent(consentRequestId)
     router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
   const onClickReject = async (e: React.MouseEvent) => {
     e.preventDefault()
     const consentRequestId = searchParams.get('consentRequestId') ?? ''
-    const consentResponseId = await rejectConsent(consentRequestId)
+    const consentResponseId = await client.rejectConsent(consentRequestId)
     router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
@@ -130,13 +51,13 @@ function LoadingContent() {
 
 export default function Form() {
   const searchParams = useSearchParams()
-
   const [consent, setConsent] = useState<Consent | null>(null)
+  const client = new ConsentApiClient()
 
   useEffect(() => {
     const execute = async () => {
       const consentRequestId = searchParams.get('consentRequestId') ?? ''
-      const consent = await fetchConsent(consentRequestId)
+      const consent = await client.fetchConsent(consentRequestId)
       setConsent(consent)
     }
     execute()
@@ -146,7 +67,7 @@ export default function Form() {
     <div className="sm:flex sm:min-h-screen sm:justify-center sm:items-center">
       <div className="sm:w-96">
         <div className="sm:border border-gray-300 p-8">
-          {consent ? <ConsentContent consent={consent} /> : <LoadingContent />}
+          {consent ? <ConsentContent client={client} consent={consent} /> : <LoadingContent />}
         </div>
       </div>
     </div>
