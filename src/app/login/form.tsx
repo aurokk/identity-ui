@@ -59,6 +59,17 @@ export default function Form() {
     // const returnUrl = encodeURIComponent(decodeURI(searchParams.get('ReturnUrl') ?? '/'))
     router.push(`/register?loginRequestId=${loginRequestId}`)
   }
+
+  // errors from google
+  // useEffect(() => {
+  //   const url = new URL(window.document.URL)
+  //   if (!url.searchParams.has('errors')) {
+  //     return
+  //   }
+  //   url.searchParams.delete('errors')
+  //   window.history.pushState({}, '', url)
+  // }, [])
+
   // useEffect(() => {
   //   async function check() {
   //     const me = await fetchMe()
@@ -68,6 +79,7 @@ export default function Form() {
   //   }
   //   check()
   // }, [])
+
   return (
     <div className="sm:flex sm:min-h-screen sm:justify-center sm:items-center">
       <div className="sm:w-96">
