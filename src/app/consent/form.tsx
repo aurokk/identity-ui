@@ -16,13 +16,6 @@ function ConsentContent({ client, consent }: { client: ConsentApiClient, consent
     router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
   }
 
-  const onClickReject = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    const consentRequestId = searchParams.get('consentRequestId') ?? ''
-    const consentResponseId = await client.rejectConsent(consentRequestId)
-    router.replace(`${process.env.NEXT_PUBLIC_DENJI_PUBLIC_BASE_URL}/connect/authorize/callback?consentResponseId=${consentResponseId}`)
-  }
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -32,10 +25,6 @@ function ConsentContent({ client, consent }: { client: ConsentApiClient, consent
         </div>
       </div>
       <div className="space-y-2">
-        <button
-          type="submit"
-          onClick={onClickReject}
-          className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Reject</button>
         <button
           type="submit"
           onClick={onClickAccept}
