@@ -41,7 +41,7 @@ export default function Form() {
     }
 
     check()
-  }, [])
+  }, [router])
 
   return (
     <div>
