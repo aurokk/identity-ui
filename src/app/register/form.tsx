@@ -160,7 +160,7 @@ export default function Form() {
           <form className="space-y-6" onSubmit={onSubmit}>
             {errors.length > 0 &&
               <div className="bg-red-500 p-3 text-white ">
-                {errors.map(e => <div>{errorCodeToText(e.errorCode)}</div>)}
+                {errors.map(e => <div key={e.errorCode}>{errorCodeToText(e.errorCode)}</div>)}
               </div>
             }
             <div>

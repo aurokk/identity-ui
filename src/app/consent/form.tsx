@@ -61,7 +61,7 @@ export default function Form() {
       setConsent(consent)
     }
     execute()
-  }, [])
+  }, [client, searchParams])
 
   return (
     <div className="sm:flex sm:min-h-screen sm:justify-center sm:items-center">
