@@ -41,7 +41,7 @@ function LoadingContent() {
 export default function Form() {
   const searchParams = useSearchParams()
   const [consent, setConsent] = useState<Consent | null>(null)
-  const client = new ConsentApiClient()
+  const [client, _] = useState<ConsentApiClient>(new ConsentApiClient())
 
   useEffect(() => {
     const execute = async () => {
